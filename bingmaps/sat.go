@@ -24,11 +24,11 @@ func GetSatelliteImage(point common.Point, zoom int, key string) image.Image {
 	}
 	if resp.StatusCode != 200 || resp.Header.Get("Content-Type") != "image/png" {
 		var errdesc string
-		//if resp.Header.Get("Content-Type") != "image/png" {
-		if bytes, err := ioutil.ReadAll(resp.Body); err == nil {
-			errdesc = string(bytes)
+		if resp.Header.Get("Content-Type") != "image/png" {
+            if bytes, err := ioutil.ReadAll(resp.Body); err == nil {
+                errdesc = string(bytes)
+            }
 		}
-		//}
 		if resp.StatusCode == 500 {
 			fmt.Printf("warning: got 500 (errdesc=%s) on %s (retrying later)\n", errdesc, url)
 			time.Sleep(time.Minute)
