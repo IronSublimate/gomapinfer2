@@ -1,14 +1,14 @@
 package main
 
 import (
+	"github.com/IronSublimate/gomapinfer2/spmetric"
 	"github.com/mitroadmaps/gomapinfer/common"
-	".."
 
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"runtime"
 	"os"
+	"runtime"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 		})
 		np := spmetric.NodePaths{
 			Backpointers: result.Backpointers,
-			Distances: result.Distances,
+			Distances:    result.Distances,
 		}
 		for nodeID := range np.Backpointers {
 			if result.Remaining[nodeID] {
@@ -59,13 +59,13 @@ func main() {
 	}
 
 	for nodeID := range graph.Nodes {
-		if nodeID % 100 == 0 {
+		if nodeID%100 == 0 {
 			fmt.Printf("%d/%d\n", nodeID, len(graph.Nodes))
 		}
 		inCh <- nodeID
 	}
 	close(inCh)
 	for i := 0; i < nthreads; i++ {
-		<- doneCh
+		<-doneCh
 	}
 }

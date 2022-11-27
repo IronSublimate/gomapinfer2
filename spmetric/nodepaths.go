@@ -11,18 +11,19 @@ import (
 )
 
 type NodePathsGraph struct {
-	Graph *common.Graph
+	Graph     *common.Graph
 	NodePaths map[int]NodePaths
 }
 
 type NodePaths struct {
-	Backpointers map[int]int `json:"backpointers"`
-	Distances map[int]float64 `json:"distances"`
+	Backpointers map[int]int     `json:"backpointers"`
+	Distances    map[int]float64 `json:"distances"`
 }
 
 func (g NodePathsGraph) GetShortestPath(src *common.Node, dst *common.Node, maxDistance float64) []*common.Node {
 	np := g.NodePaths[src.ID]
 	if _, ok := np.Backpointers[dst.ID]; !ok {
+		fmt.Printf("%d %d\n", src.ID, dst.ID)
 		return nil
 	} else if np.Distances[dst.ID] > maxDistance {
 		return nil
@@ -36,7 +37,7 @@ func (g NodePathsGraph) GetShortestPath(src *common.Node, dst *common.Node, maxD
 	}
 	path := make([]*common.Node, len(reverseSeq))
 	for i, node := range reverseSeq {
-		path[len(path) - i - 1] = node
+		path[len(path)-i-1] = node
 	}
 	return path
 }

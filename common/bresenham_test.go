@@ -1,9 +1,10 @@
 package common
 
 import (
+	"fmt"
 	"testing"
 )
 
 func TestBresenhamSlope1(t *testing.T) {
-	t.Fatalf("%v", DrawLineOnCells(5, 5, 10, 15, 20, 20))
+	fmt.Printf("%v", DrawLineOnCells(5, 5, 10, 15, 20, 20))
 }

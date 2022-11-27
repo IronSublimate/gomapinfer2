@@ -1,7 +1,7 @@
 package main
 
 import (
-	".."
+	"github.com/IronSublimate/gomapinfer2/spmetric"
 
 	"fmt"
 	"os"
