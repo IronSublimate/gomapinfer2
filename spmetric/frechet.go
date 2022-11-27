@@ -1,7 +1,7 @@
 package spmetric
 
 import (
-	"github.com/mitroadmaps/gomapinfer/common"
+	"github.com/IronSublimate/gomapinfer2/common"
 
 	"math"
 )
@@ -27,25 +27,25 @@ func ComputeFrechetDistance(a []common.Point, b []common.Point) float64 {
 
 			var best float64 = math.Inf(1)
 			if i > 0 {
-				best = math.Min(best, m[i - 1][j])
+				best = math.Min(best, m[i-1][j])
 			}
 			if j > 0 {
-				best = math.Min(best, m[i][j - 1])
+				best = math.Min(best, m[i][j-1])
 			}
 			if i > 0 && j > 0 {
-				best = math.Min(best, m[i - 1][j - 1])
+				best = math.Min(best, m[i-1][j-1])
 			}
 			m[i][j] = math.Max(best, a[i].Distance(b[j]))
 		}
 	}
 
-	return m[len(a) - 1][len(b) - 1]
+	return m[len(a)-1][len(b)-1]
 }
 
 type GraphPath struct {
 	Start common.EdgePos
-	Path []*common.Node
-	End common.EdgePos
+	Path  []*common.Node
+	End   common.EdgePos
 }
 
 // Find the path in graph with minimum Frechet distance to the given path, along with the associated Frechet distance.
@@ -65,10 +65,10 @@ func GetClosestPath(graph NodePathsGraph, path []common.Point, radius float64) (
 	//  )
 	type Entry struct {
 		MaxDistance float64
-		EdgePos common.EdgePos
-		Nodes []*common.Node
+		EdgePos     common.EdgePos
+		Nodes       []*common.Node
 
-		CurDistance float64
+		CurDistance      float64
 		EndpointDistance float64
 	}
 
@@ -105,7 +105,7 @@ func GetClosestPath(graph NodePathsGraph, path []common.Point, radius float64) (
 		}
 		entries[0][edge.ID] = &Entry{
 			MaxDistance: distance,
-			EdgePos: edge.ClosestPos(path[0]),
+			EdgePos:     edge.ClosestPos(path[0]),
 			CurDistance: distance,
 		}
 	}
@@ -121,7 +121,7 @@ func GetClosestPath(graph NodePathsGraph, path []common.Point, radius float64) (
 				continue
 			}
 
-			for prevEdgeID, prevEntry := range entries[i - 1] {
+			for prevEdgeID, prevEntry := range entries[i-1] {
 				// get shortest path from end of previous edge to start of current edge
 				// if we stayed on the same edge, shortest path is empty
 				var shortestPath []*common.Node
@@ -134,7 +134,7 @@ func GetClosestPath(graph NodePathsGraph, path []common.Point, radius float64) (
 							StopNodes: []*common.Node{edge.Src},
 						})
 						resultPath := result.GetPathTo(edge.Src)*/
-						resultPath := graph.GetShortestPath(prevEntry.EdgePos.Edge.Dst, edge.Src, path[i].Distance(path[i - 1]) * 4)
+						resultPath := graph.GetShortestPath(prevEntry.EdgePos.Edge.Dst, edge.Src, path[i].Distance(path[i-1])*4)
 						if resultPath == nil {
 							continue
 						}
@@ -161,11 +161,11 @@ func GetClosestPath(graph NodePathsGraph, path []common.Point, radius float64) (
 				curDistance := ComputeFrechetDistance(graphPath, path[i-1:i+1])
 				maxDistance := math.Max(prevEntry.MaxDistance, curDistance)
 				entry := &Entry{
-					MaxDistance: maxDistance,
-					EdgePos: closestPos,
-					Nodes: shortestPath,
-					CurDistance: curDistance,
-					EndpointDistance: math.Max(prevEntry.EdgePos.Point().Distance(path[i - 1]), closestPos.Point().Distance(path[i])),
+					MaxDistance:      maxDistance,
+					EdgePos:          closestPos,
+					Nodes:            shortestPath,
+					CurDistance:      curDistance,
+					EndpointDistance: math.Max(prevEntry.EdgePos.Point().Distance(path[i-1]), closestPos.Point().Distance(path[i])),
 				}
 
 				if entries[i][edge.ID] == nil || less(entry, entries[i][edge.ID]) {
@@ -178,7 +178,7 @@ func GetClosestPath(graph NodePathsGraph, path []common.Point, radius float64) (
 
 	// get best entry from the last map
 	var bestEndEntry *Entry
-	for _, entry := range entries[len(path) - 1] {
+	for _, entry := range entries[len(path)-1] {
 		if bestEndEntry == nil || less(entry, bestEndEntry) {
 			bestEndEntry = entry
 		}
@@ -197,8 +197,8 @@ func GetClosestPath(graph NodePathsGraph, path []common.Point, radius float64) (
 	}
 	graphPath := &GraphPath{
 		Start: entries[0][curEdgeID].EdgePos,
-		Path: nodeSeq,
-		End: bestEndEntry.EdgePos,
+		Path:  nodeSeq,
+		End:   bestEndEntry.EdgePos,
 	}
 
 	return graphPath, bestEndEntry.MaxDistance

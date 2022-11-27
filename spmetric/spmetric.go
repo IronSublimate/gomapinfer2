@@ -1,7 +1,7 @@
 package spmetric
 
 import (
-	"github.com/mitroadmaps/gomapinfer/common"
+	"github.com/IronSublimate/gomapinfer2/common"
 
 	"fmt"
 	"math"
@@ -17,7 +17,7 @@ func SamplePath(graph *common.Graph) []*common.Node {
 	var node *common.Node
 	bounds := graph.Bounds().AddTol(-512)
 	for i := 0; true; i++ {
-		if i % 50 == 0 {
+		if i%50 == 0 {
 			bounds = bounds.AddTol(64)
 		}
 		node = graph.Nodes[rand.Intn(len(graph.Nodes))]
@@ -62,8 +62,8 @@ func SPMetric(a NodePathsGraph, b NodePathsGraph, prefix string, showA bool) (fl
 
 			var boundables []common.Boundable
 			boundables = append(boundables, common.EmbeddedImage{
-				Src: common.Point{-4096, -8192},
-				Dst: common.Point{4096, 0},
+				Src:   common.Point{-4096, -8192},
+				Dst:   common.Point{4096, 0},
 				Image: "./14-chicago.png",
 			})
 			if showA {
@@ -74,13 +74,13 @@ func SPMetric(a NodePathsGraph, b NodePathsGraph, prefix string, showA bool) (fl
 				boundables = append(boundables, common.ColoredBoundable{b.Graph, "blue"})
 			}
 			r := common.EmptyRectangle
-			for i := 0; i < len(aPoints) - 1; i++ {
-				segment := common.Segment{aPoints[i], aPoints[i + 1]}
+			for i := 0; i < len(aPoints)-1; i++ {
+				segment := common.Segment{aPoints[i], aPoints[i+1]}
 				boundables = append(boundables, common.WidthBoundable{common.ColoredBoundable{segment, "green"}, 5})
 				r = r.Extend(aPoints[i])
 			}
-			for i := 0; i < len(bPoints) - 1; i++ {
-				segment := common.Segment{bPoints[i], bPoints[i + 1]}
+			for i := 0; i < len(bPoints)-1; i++ {
+				segment := common.Segment{bPoints[i], bPoints[i+1]}
 				boundables = append(boundables, common.WidthBoundable{common.ColoredBoundable{segment, "red"}, 5})
 				r = r.Extend(bPoints[i])
 			}
@@ -96,7 +96,7 @@ func SPMetric(a NodePathsGraph, b NodePathsGraph, prefix string, showA bool) (fl
 	}
 
 	type Result struct {
-		Distances []float64
+		Distances    []float64
 		InvalidCount int
 	}
 
@@ -126,12 +126,12 @@ func SPMetric(a NodePathsGraph, b NodePathsGraph, prefix string, showA bool) (fl
 
 	var result Result
 	for i := 0; i < nthreads; i++ {
-		threadResult := <- doneCh
+		threadResult := <-doneCh
 		result.Distances = append(result.Distances, threadResult.Distances...)
 		result.InvalidCount += threadResult.InvalidCount
 	}
 
-	coverage := float64(len(result.Distances)) / float64(len(result.Distances) + result.InvalidCount)
+	coverage := float64(len(result.Distances)) / float64(len(result.Distances)+result.InvalidCount)
 	var sum float64
 	for _, d := range result.Distances {
 		sum += d
@@ -141,6 +141,6 @@ func SPMetric(a NodePathsGraph, b NodePathsGraph, prefix string, showA bool) (fl
 	for _, d := range result.Distances {
 		sumSqErr += (d - avg) * (d - avg)
 	}
-	stddev := math.Sqrt(sumSqErr / float64(len(result.Distances) - 1))
+	stddev := math.Sqrt(sumSqErr / float64(len(result.Distances)-1))
 	return avg, stddev, coverage
 }

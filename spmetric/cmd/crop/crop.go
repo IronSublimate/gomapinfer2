@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mitroadmaps/gomapinfer/common"
+	"github.com/IronSublimate/gomapinfer2/common"
 
 	"flag"
 	"fmt"

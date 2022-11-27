@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/IronSublimate/gomapinfer2/common"
 	"github.com/IronSublimate/gomapinfer2/spmetric"
-	"github.com/mitroadmaps/gomapinfer/common"
 
 	"encoding/json"
 	"fmt"

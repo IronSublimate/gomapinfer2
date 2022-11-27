@@ -2,7 +2,7 @@ package googlemaps
 
 import (
 	//"../common"
-	"github.com/mitroadmaps/gomapinfer/common"
+	"github.com/IronSublimate/gomapinfer2/common"
 
 	"bytes"
 	"fmt"
@@ -51,7 +51,7 @@ func GetSatelliteImage(point common.Point, zoom int, key string) image.Image {
 	cropped := image.NewRGBA(image.Rect(0, 0, 512, 512))
 	for i := 0; i < 512; i++ {
 		for j := 0; j < 512; j++ {
-			cropped.Set(i, j, im.At(i + 32, j + 32))
+			cropped.Set(i, j, im.At(i+32, j+32))
 		}
 	}
 
